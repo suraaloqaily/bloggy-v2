@@ -4,8 +4,7 @@ import { Inter } from "next/font/google";
 import { ThemeContextProvider } from "@/context/ThemeContext";
 import ThemeProvider from "@/providers/ThemeProvider";
 import AuthProvider from "@/providers/AuthProvider";
-import Navbar from "@/components/navbar/Navbar";
- 
+  
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",

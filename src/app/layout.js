@@ -4,9 +4,12 @@ import { Inter } from "next/font/google";
 import { ThemeContextProvider } from "@/context/ThemeContext";
 import ThemeProvider from "@/providers/ThemeProvider";
 import AuthProvider from "@/providers/AuthProvider";
-
-const inter = Inter({ subsets: ["cyrillic"] });
-
+import Navbar from "@/components/navbar/Navbar";
+ 
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 export const metadata = {
   title: "Bloggy !!🚀",
   description: "The best blog app!",

@@ -2,7 +2,14 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-
+  compiler: {
+    // Ensure SWC is used for Next.js compilation
+    styledComponents: true, // If you're using styled-components
+  },
+  experimental: {
+    // Force Next.js to use SWC even when Babel config is present
+    forceSwcTransforms: true,
+  },
   async headers() {
     return [
       {

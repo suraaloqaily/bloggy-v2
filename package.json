@@ -52,5 +52,9 @@
     "identity-obj-proxy": "^3.0.0",
     "ts-node": "^10.9.2",
     "whatwg-fetch": "^3.6.20"
-  }
-}
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { "configFile": "./.babelrc.js" }]
+    }
+}}

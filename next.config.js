@@ -2,9 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  env: {
-    NEXT_PUBLIC_SERVER_API_URL: process.env.NEXT_PUBLIC_SERVER_API_URL,
-  },
   async headers() {
     return [
       {
@@ -25,4 +22,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

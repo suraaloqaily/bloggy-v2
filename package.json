@@ -12,7 +12,7 @@
     "heroku-postbuild": "prisma generate && npm run build"
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.11.0"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",

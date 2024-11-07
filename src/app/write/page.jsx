@@ -20,7 +20,7 @@ const WritePage = () => {
   const [catSlug, setCatSlug] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [slug, setSlug] = useState("");  
+  const [slug, setSlug] = useState("");
   const fileInputRef = useRef(null);
 
   const convertToBase64 = (file) => {
@@ -42,13 +42,13 @@ const WritePage = () => {
     upload();
   }, [file]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/");
     }
   }, [status, router]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (slug) {
       router.push(`/posts/${slug}`);
     }
@@ -167,7 +167,7 @@ const WritePage = () => {
         />
         {media && (
           <div className={styles.imagePreview}>
-            <img
+            <Image
               src={media}
               alt="Preview"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -196,5 +196,6 @@ const WritePage = () => {
     </div>
   );
 };
+WritePage.displayName = "WritePage";
 
 export default WritePage;

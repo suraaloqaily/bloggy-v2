@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --config jest.config.js",
     "seed": "node src/utils/seed.js",
     "heroku-postbuild": "prisma generate && npm run build"
   },
@@ -55,6 +55,12 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { "configFile": "./.babelrc.js" }]
+      "^.+\\.(js|jsx|ts|tsx)$": [
+        "babel-jest",
+        {
+          "configFile": "./.babelrc.js"
+        }
+      ]
     }
-}}
+  }
+}

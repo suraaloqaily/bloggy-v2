@@ -4,12 +4,9 @@ import Pagination from "../pagination/Pagination";
 import Card from "../card/Card";
 
 const getData = async (page, cat) => {
-  const res = await fetch(
-    `/api/posts?page=${page}&cat=${cat || ""}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`/api/posts?page=${page}&cat=${cat || ""}`, {
+    cache: "no-store",
+  });
 
   if (!res.ok) {
     throw new Error("Failed");
@@ -29,7 +26,7 @@ const CardList = async ({ page, cat }) => {
       <h1 className={styles.title}>Recent Blogs</h1>
       {cat && (
         <div className={styles.countInfo}>
-          {count} blogs found in category "{cat}"
+          {count} blogs found in category &ldquo;{cat}&rdquo;
         </div>
       )}
       {posts && posts.length > 0 ? (

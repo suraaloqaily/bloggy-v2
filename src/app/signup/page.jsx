@@ -94,7 +94,7 @@ const SignupPage = () => {
       });
 
       if (response.ok) {
-         const result = await signIn("credentials", {
+        const result = await signIn("credentials", {
           redirect: false,
           email,
           password,
@@ -215,5 +215,6 @@ const SignupPage = () => {
     </div>
   );
 };
+SignupPage.displayName = "SignupPage";
 
 export default SignupPage;

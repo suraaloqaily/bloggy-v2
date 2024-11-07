@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "seed": "node src/utils/seed.js",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "prisma generate && npm run build"
   },
   "engines": {
     "node": "18.x"

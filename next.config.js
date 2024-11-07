@@ -3,12 +3,19 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   compiler: {
-    // Ensure SWC is used for Next.js compilation
-    styledComponents: true, // If you're using styled-components
+    styledComponents: true,
   },
   experimental: {
-    // Force Next.js to use SWC even when Babel config is present
     forceSwcTransforms: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        path: false,
+      };
+    }
+    return config;
   },
   async headers() {
     return [
@@ -25,8 +32,14 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: [],
+    domains: ["res.cloudinary.com", "localhost"], // Add any other domains you need
     minimumCacheTTL: 60,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
 };
 

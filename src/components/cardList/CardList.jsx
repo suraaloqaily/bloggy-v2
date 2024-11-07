@@ -4,16 +4,28 @@ import Pagination from "../pagination/Pagination";
 import Card from "../card/Card";
 
 const getData = async (page, cat) => {
-  const res = await fetch(`/api/posts?page=${page}&cat=${cat || ""}`, {
+  const params = new URLSearchParams({
+    page: page.toString(),
+  });
+
+  if (cat) {
+    params.append("cat", cat);
+  }
+
+  const url = `${process.env.NEXTAUTH_URL}/api/posts?${params.toString()}`;
+
+  console.log("Fetching URL:", url); // Add this line for debugging
+
+  const res = await fetch(url, {
     cache: "no-store",
   });
 
   if (!res.ok) {
-    throw new Error("Failed");
+    throw new Error("Failed to fetch data");
   }
+
   return res.json();
 };
-
 const CardList = async ({ page, cat }) => {
   const { posts, count } = await getData(page, cat);
 

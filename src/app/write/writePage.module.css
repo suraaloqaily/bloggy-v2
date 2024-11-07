@@ -1,0 +1,134 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input {
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  border-bottom: 2px solid #ddd;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  border-bottom: 2px solid rgba(93, 43, 100, 0.359);
+}
+
+.select {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid #ddd;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: transparent;
+}
+
+.select:focus {
+  border-bottom: 2px solid rgba(93, 43, 100, 0.359);
+}
+
+.editor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button {
+  background-color: rgba(93, 43, 100, 0.359);
+  color: #fff;
+  padding: 8px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+  background-color: rgba(27, 13, 29, 0.359);
+  transform: scale(1.1);
+}
+
+.add {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.addButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.addButton:hover {
+  transform: scale(1.1);
+  background-color: rgba(27, 13, 29, 0.359);
+}
+
+.textArea {
+  font-size: 16px;
+  padding: 10px 0;
+  min-height: 200px;
+  border-bottom: 2px solid #ddd;
+  outline: none;
+  background-color: transparent;
+  transition: border-color 0.3s;
+}
+
+.textArea:focus {
+  border-bottom: 2px solid rgba(93, 43, 100, 0.359);
+}
+
+.publish {
+  background-color: rgba(93, 43, 100, 0.359);
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-self: flex-end;
+}
+
+.publish:hover {
+  background-color: rgba(27, 13, 29, 0.359);
+}
+
+.loading {
+  font-size: 18px;
+  color: #555;
+  text-align: center;
+  margin-top: 20px;
+}
+.errorMessage {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.imagePreview {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}

@@ -1,13 +1,15 @@
-import { SessionProvider } from "next-auth/react";
-import SignupPage from "../app/signup/page";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import SignupPage from "../app/signup/page";
+
+const mockRouter = {
+  push: jest.fn(),
+  refresh: jest.fn(),
+};
 
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
+  useRouter: () => mockRouter,
 }));
 
 // Mock next-auth/react
@@ -16,26 +18,24 @@ jest.mock("next-auth/react", () => ({
     status: "unauthenticated",
   }),
   signIn: jest.fn(),
-  SessionProvider: ({ children }) => children,
+  SessionProvider: function MockSessionProvider({ children }) {
+    return <div>{children}</div>;
+  },
 }));
 
-// Mock fetch
+// Import mocked functions
+import { signIn } from "next-auth/react";
+
+// Mock fetch globally
 global.fetch = jest.fn();
 
 describe("SignupPage", () => {
-  const mockRouter = {
-    push: jest.fn(),
-  };
-
   beforeEach(() => {
-    // Reset all mocks before each test
     jest.clearAllMocks();
-    useRouter.mockReturnValue(mockRouter);
     global.fetch.mockReset();
   });
 
   test("renders sign up form and submits data", async () => {
-    // Mock successful API response
     global.fetch.mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
@@ -43,30 +43,21 @@ describe("SignupPage", () => {
       })
     );
 
-    // Mock successful signIn
     signIn.mockImplementationOnce(() => Promise.resolve({ error: null }));
 
-    render(
-      <SessionProvider session={null}>
-        <SignupPage />
-      </SessionProvider>
-    );
+    render(<SignupPage />);
 
-    // Get form elements
     const nameInput = screen.getByPlaceholderText(/name/i);
     const emailInput = screen.getByPlaceholderText(/email/i);
     const passwordInput = screen.getByPlaceholderText(/password/i);
     const submitButton = screen.getByRole("button", { name: /sign up/i });
 
-    // Fill in form
     fireEvent.change(nameInput, { target: { value: "Test User" } });
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });
 
-    // Submit form
     fireEvent.click(submitButton);
 
-    // Wait for and verify API call
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith("/api/auth/signup", {
         method: "POST",
@@ -82,7 +73,6 @@ describe("SignupPage", () => {
       });
     });
 
-    // Verify signIn was called
     await waitFor(() => {
       expect(signIn).toHaveBeenCalledWith("credentials", {
         redirect: false,
@@ -91,14 +81,12 @@ describe("SignupPage", () => {
       });
     });
 
-    // Verify router push was called
     await waitFor(() => {
       expect(mockRouter.push).toHaveBeenCalledWith("/login");
     });
   });
 
   test("handles signup error", async () => {
-    // Mock failed API response
     global.fetch.mockImplementationOnce(() =>
       Promise.resolve({
         ok: false,
@@ -106,11 +94,7 @@ describe("SignupPage", () => {
       })
     );
 
-    render(
-      <SessionProvider session={null}>
-        <SignupPage />
-      </SessionProvider>
-    );
+    render(<SignupPage />);
 
     const nameInput = screen.getByPlaceholderText(/name/i);
     const emailInput = screen.getByPlaceholderText(/email/i);
@@ -123,7 +107,6 @@ describe("SignupPage", () => {
 
     fireEvent.click(submitButton);
 
-    // Wait for error message to appear
     await waitFor(() => {
       expect(screen.getByText("Signup failed")).toBeInTheDocument();
     });

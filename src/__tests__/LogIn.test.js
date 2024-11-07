@@ -1,31 +1,39 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { SessionProvider } from "next-auth/react";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import LoginPage from "../app/login/page";
 
+const mockRouter = {
+  push: jest.fn(),
+  refresh: jest.fn(),
+};
+
+// Mock next/navigation
+jest.mock("next/navigation", () => ({
+  useRouter: () => mockRouter,
+}));
+
+// Mock next-auth/react
 jest.mock("next-auth/react", () => ({
   signIn: jest.fn(),
   useSession: jest.fn(),
-  SessionProvider: ({ children }) => children,
+  SessionProvider: function MockSessionProvider({ children }) {
+    return <div>{children}</div>;
+  },
 }));
 
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
-}));
+// Mock Loading component
+jest.mock("@/components/Loading/Loading", () => {
+  const MockLoading = () => <div>Loading...</div>;
+  MockLoading.displayName = "MockLoading";
+  return MockLoading;
+});
 
-jest.mock("@/components/Loading/Loading", () => () => <div>Loading...</div>);
+// Import mocked functions
+import { signIn, useSession } from "next-auth/react";
 
 describe("LoginPage", () => {
-  const mockPush = jest.fn();
-  const mockRefresh = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    useRouter.mockReturnValue({ push: mockPush, refresh: mockRefresh });
-
     useSession.mockReturnValue({
       status: "unauthenticated",
       data: null,
@@ -35,11 +43,7 @@ describe("LoginPage", () => {
   it("renders login form and submits data successfully", async () => {
     signIn.mockResolvedValue({ ok: true, error: null });
 
-    render(
-      <SessionProvider>
-        <LoginPage />
-      </SessionProvider>
-    );
+    render(<LoginPage />);
 
     fireEvent.change(screen.getByPlaceholderText(/email/i), {
       target: { value: "test@example.com" },
@@ -59,19 +63,15 @@ describe("LoginPage", () => {
     });
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/");
-      expect(mockRefresh).toHaveBeenCalled();
+      expect(mockRouter.push).toHaveBeenCalledWith("/");
+      expect(mockRouter.refresh).toHaveBeenCalled();
     });
   });
 
   it("displays error message on login failure", async () => {
     signIn.mockResolvedValue({ ok: false, error: "Invalid credentials" });
 
-    render(
-      <SessionProvider>
-        <LoginPage />
-      </SessionProvider>
-    );
+    render(<LoginPage />);
 
     fireEvent.change(screen.getByPlaceholderText(/email/i), {
       target: { value: "test@example.com" },
@@ -86,8 +86,8 @@ describe("LoginPage", () => {
       expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
     });
 
-    expect(mockPush).not.toHaveBeenCalled();
-    expect(mockRefresh).not.toHaveBeenCalled();
+    expect(mockRouter.push).not.toHaveBeenCalled();
+    expect(mockRouter.refresh).not.toHaveBeenCalled();
   });
 
   it("redirects to home if already authenticated", async () => {
@@ -96,14 +96,10 @@ describe("LoginPage", () => {
       data: { user: { email: "test@example.com" } },
     });
 
-    render(
-      <SessionProvider>
-        <LoginPage />
-      </SessionProvider>
-    );
+    render(<LoginPage />);
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/");
+      expect(mockRouter.push).toHaveBeenCalledWith("/");
     });
   });
 
@@ -113,11 +109,7 @@ describe("LoginPage", () => {
       data: null,
     });
 
-    render(
-      <SessionProvider>
-        <LoginPage />
-      </SessionProvider>
-    );
+    render(<LoginPage />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });

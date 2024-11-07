@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import WritePage from "../app/write/page";
 
 const mockRouter = {
@@ -13,15 +12,19 @@ const mockRouter = {
   prefetch: jest.fn(),
 };
 
+// Mock next/navigation
 jest.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
 }));
 
-jest.mock("next-auth/react");
+// Mock next-auth/react
+jest.mock("next-auth/react", () => ({
+  useSession: jest.fn(),
+}));
 
-jest.mock("react-quill", () => ({
-  __esModule: true,
-  default: ({ value, onChange, placeholder }) => (
+// Mock react-quill
+jest.mock("react-quill", () => {
+  const MockQuill = ({ value, onChange, placeholder }) => (
     <div data-testid="quill-editor">
       <textarea
         value={value}
@@ -29,20 +32,30 @@ jest.mock("react-quill", () => ({
         placeholder={placeholder}
       />
     </div>
-  ),
-}));
+  );
+  MockQuill.displayName = "MockQuill";
+  return { __esModule: true, default: MockQuill };
+});
 
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: ({ src, alt }) => (
+// Mock next/image
+jest.mock("next/image", () => {
+  const MockImage = ({ src, alt, ...props }) => (
     <img
       src={src}
       alt={alt}
+      {...props}
     />
-  ),
-}));
+  );
+  MockImage.displayName = "MockImage";
+  return { __esModule: true, default: MockImage };
+});
 
-jest.mock("@/components/Loading/Loading", () => () => <div>Loading...</div>);
+// Mock Loading component
+jest.mock("@/components/Loading/Loading", () => {
+  const MockLoading = () => <div>Loading...</div>;
+  MockLoading.displayName = "MockLoading";
+  return MockLoading;
+});
 
 describe("WritePage", () => {
   beforeEach(() => {
